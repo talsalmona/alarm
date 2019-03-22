@@ -60,18 +60,12 @@ void loop() {
     delay(5);                      //ADC stable
   }
   value /= 10.0;                   //Find average of 10 values
-  //value = (value/1024.0);          //Convert Voltage in 5v factor
-
-  Serial.print("value: ");
-  Serial.println(value);
  
   if(value <= 400){
     mqttClient.publish(door_topic, "closed");
-    Serial.println("Sent door closed MQTT message");
   }
   else {
     mqttClient.publish(door_topic, "open");
-    Serial.println("Sent door open MQTT message");
   }
      
   delay(1000); 
