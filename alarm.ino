@@ -11,6 +11,7 @@ WiFiClient espClient;
 PubSubClient mqttClient(espClient);
  
 int DOOR = A0; //Analog channel A0 used to measure sensor voltqge (open is about 508)
+boolean isOpen = false;
  
 void setup() {
   Serial.begin(9600);
@@ -60,14 +61,21 @@ int readDoorInput() {
 void loop() {
   reconnectIfNeeded();
   mqttClient.loop();
-  
+
+  boolean shouldSend = false;
   int value = readDoorInput();
  
-  if(value <= 400){
-    mqttClient.publish(door_topic, "closed");
+  if(value <= 400) { //closed
+    shouldSend = isOpen;
+    isOpen = false;
   }
-  else {
-    mqttClient.publish(door_topic, "open");
+  else { // open
+    shouldSend = !isOpen;
+    isOpen = true;    
+  }
+
+  if (shouldSend) {
+    mqttClient.publish(door_topic, isOpen ? "open" : "closed");
   }
      
   delay(1000); 
