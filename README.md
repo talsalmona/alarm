@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/talsalmona/alarm.svg?branch=master)](https://travis-ci.org/talsalmona/alarm)
+
 # Alarm Hack
 Hacking a [Crow Runner](http://www.thecrowgroup.com/Products_Systems/runner_8_16/runner_8_16/) alarm system with esp8266
 
