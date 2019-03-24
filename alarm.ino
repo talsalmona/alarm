@@ -56,6 +56,7 @@ int readDoorInput() {
     delay(5);                      //ADC stable
   }
   value /= 10.0;                   //Find average of 10 values
+  return value;
 }
 
 void loop() {
