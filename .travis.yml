@@ -3,6 +3,8 @@ env:
   global:
     - ARDUINO_IDE_VERSION="1.8.8"
 before_install:
-  - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)     
+  - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)    
+install:
+  - arduino --install-library "PubSubClient"  
 script:
   - build_platform esp8266
