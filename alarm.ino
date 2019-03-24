@@ -33,7 +33,7 @@ void startWifi() {
   Serial.println(WiFi.localIP());  
 }
 
-void reconnect() {
+void reconnectIfNeeded() {
   // Loop until we're reconnected
   while (!mqttClient.connected()) {
     Serial.print("Attempting MQTT connection...");
@@ -47,19 +47,21 @@ void reconnect() {
     }
   }
 }
- 
-void loop() {
-  if (!mqttClient.connected()) {
-    reconnect();
-  }
-  mqttClient.loop();
-  
+
+int readDoorInput() {
   float value = 0.0;    
   for(unsigned int i=0; i<10; i++){
     value += analogRead(DOOR);     //Read analog Voltage
     delay(5);                      //ADC stable
   }
   value /= 10.0;                   //Find average of 10 values
+}
+
+void loop() {
+  reconnectIfNeeded();
+  mqttClient.loop();
+  
+  int value = readDoorInput();
  
   if(value <= 400){
     mqttClient.publish(door_topic, "closed");
