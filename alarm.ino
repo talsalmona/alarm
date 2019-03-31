@@ -4,7 +4,7 @@
 
 #define ssid "salmona"
 #define password "***"
-#define mqtt_server "192.168.86.**"
+#define mqtt_server "192.168.86.125"
 #define door_topic "sensor/door"
 
 WiFiClient espClient;
@@ -49,6 +49,11 @@ void reconnectIfNeeded() {
   }
 }
 
+void runMqttLoop() {
+  reconnectIfNeeded();
+  mqttClient.loop();
+}
+
 int readDoorInput() {
   float value = 0.0;    
   for(unsigned int i=0; i<10; i++){
@@ -59,25 +64,26 @@ int readDoorInput() {
   return value;
 }
 
-void loop() {
-  reconnectIfNeeded();
-  mqttClient.loop();
-
+void sendDoorStatusChangeIfNeeded() {
   boolean shouldSend = false;
   int value = readDoorInput();
- 
-  if(value <= 400) { //closed
+
+  if (value <= 400) { //closed
     shouldSend = isOpen;
     isOpen = false;
   }
   else { // open
     shouldSend = !isOpen;
-    isOpen = true;    
+    isOpen = true;
   }
 
   if (shouldSend) {
     mqttClient.publish(door_topic, isOpen ? "open" : "closed");
   }
-     
-  delay(1000); 
+}
+
+void loop() {
+  runMqttLoop();
+  sendDoorStatusChangeIfNeeded();
+  delay(1000);
 }
