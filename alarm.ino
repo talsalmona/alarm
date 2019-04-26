@@ -14,7 +14,7 @@ int DOOR = A0; //Analog channel A0 used to measure sensor voltqge (open is about
 boolean isOpen = false;
  
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   startWifi();
   mqttClient.setServer(mqtt_server, 1883);
 }
@@ -78,7 +78,10 @@ void sendDoorStatusChangeIfNeeded() {
   }
 
   if (shouldSend) {
-    mqttClient.publish(door_topic, isOpen ? "open" : "closed");
+    String status = isOpen ? "open" : "closed";
+    mqttClient.publish(door_topic, status.c_str());
+    Serial.print("sent ");
+    Serial.println(status);
   }
 }
 
