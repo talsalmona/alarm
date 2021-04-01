@@ -1,18 +1,22 @@
 
+
+
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
-#define ssid "salmona"
+#define ssid "***"
 #define password "***"
-#define mqtt_server "192.168.86.125"
+#define mqtt_server "***"
 #define door_topic "sensor/door"
+#define mqtt_username "***"
+#define mqtt_password "***"
 
 WiFiClient espClient;
 PubSubClient mqttClient(espClient);
- 
+
 int DOOR = A0; //Analog channel A0 used to measure sensor voltqge (open is about 508)
 boolean isOpen = false;
- 
+
 void setup() {
   Serial.begin(115200);
   startWifi();
@@ -24,21 +28,21 @@ void startWifi() {
   Serial.print("Connecting to ");
   Serial.println(ssid);
   WiFi.begin(ssid, password);
- 
+
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
+    delay(1000);
     Serial.print(".");
   }
   Serial.println("");
   Serial.print("WiFi connected: ");
-  Serial.println(WiFi.localIP());  
+  Serial.println(WiFi.localIP());
 }
 
 void reconnectIfNeeded() {
   // Loop until we're reconnected
   while (!mqttClient.connected()) {
     Serial.print("Attempting MQTT connection...");
-    if (mqttClient.connect("AlarmClient")) {
+    if (mqttClient.connect("AlarmClient", mqtt_username, mqtt_password)) {
       Serial.println("connected");
     } else {
       Serial.print("failed, rc=");
@@ -55,7 +59,7 @@ void runMqttLoop() {
 }
 
 int readDoorInput() {
-  float value = 0.0;    
+  float value = 0.0;
   for(unsigned int i=0; i<10; i++){
     value += analogRead(DOOR);     //Read analog Voltage
     delay(5);                      //ADC stable
